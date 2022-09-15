@@ -1,0 +1,25 @@
+\section{ECC, et alternativ til RSA-kryptering?}
+RSA var det første public-key kryptosystem som blev adopteret af mange internetprotokoller. Systemet er bedre end et klassisk diffie-helmann key exchange, da man kan lave signaturer. Dog er det blevet vist, at nogle algoritmer kan løse det diskrete logaritmeproblem på under eksponentiel tid for RSA (\cite{carlpomerance1987}). I forbindelse med, at computere er blevet meget hurtigere har RSA-nøglers længde været nødt til at følge med. Dette har gjort, at RSA-kryptering er blevet langt tungere på mindre enheder såsom IOT, hvor kryptering er meget vigtigt \cite{nilsguraarunpatel2004}. 
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{lll}
+\toprule
+\textbf{Security Bit Level} & \textbf{RSA} & \textbf{ECC} \\ \midrule
+80                          & 1024         & 160          \\ 
+112                         & 2048         & 224          \\ 
+128                         & 3072         & 256          \\ 
+192                         & 7680         & 384          \\ 
+256                         & 15360        & 512          \\ 
+\bottomrule
+\end{tabular}
+\caption{\cite{mahto}}
+\label{tab:RSAvsECC}
+\end{table}
+
+
+\FloatBarrier
+På overstående \fref{tab:RSAvsECC} ses en data fra NIST \textit{(National Institute of Standards and Technology)} over den anbefalede sikkerhed ift. bitlængde. Som det kan ses, er key-længden for RSA kraftigt stigende hvor ECC er noget kortere. Ved 256-bit sikkerhed skal en RSA-key være 15360 bit lang (1,92 kB), hvor ECC kun skal være 512 bit. Selvom 1,92 kB ikke er meget, kan en server med mange tusinde requests hurtigt fylde meget plads op. 
+\\\\
+Det kan hermed ses at hvis man kigger på sikkerheden bag systemerne ift. kryptering, er ECC langt mere effektivt end RSA. Dog har ECC også haft sine egne udfordringer. Et af de større problemer ved ECC, er at man skal blive enige om at bruge en specifik kurve. Man har igennem årene prøvet at lave databaser såsom safecurves.cr.yp.to, men selv disse ”uafhængige” parter er blevet beskyldt for ikke at være klare i alt deres forskning ift hvad de mener er en ”god kurve” (\cite{satoshinichi2020}). En del af Edward Snowdens læk af fortrolige dokumenter i 2013 inkluderede at NSA havde betalt en gruppe problemløsere 10 millioner USD for at indbygge en Kleptografisk\footnote{Et kleptografisk angreb, bruger asymmetrisk kryptografi til at implementere en kryptografisk bagdør der er svær at finde.\cite{patrickvacek2013}} bagdør i \textit{(Dual\_EC\_DRBG)} brugt til at generere pseudotilfældige tal (\cite{josephmenn2013}). Efter denne begivenhed er der kommet langt større fokus på at sikre sig at kurver er sikre, men i forhold til RSA-kryptering er det en ulempe at skulle anvende så mange offentlige parametre. \\\\
+Det er i det hele taget vigtigt at huske, at det indtil videre har været umuligt at bevise at det diskrete logaritmeproblem både for RSA og elliptiske kurver ikke kan løses med en meget hurtig algoritme på en almindelig computer. Kvantecomputere vil også i fremtiden blive en reel trussel til public-key kryptering. Selvom kvantecomptutere i dag er meget teoretiske er der store organisationer såsom NSA der forsker meget i hvordan de kan implementeres (\cite{nsa2022}). Når kvantecomputere kan arbejde med et reelt antal qubits\footnote{En \textit{"qubit"} (eller \textit{"kvantebit"}) er den kvantemekaniske analog til en klassisk bit.} vil det blive enden på kryptografi som vi kender det i dag. Shors’ algoritme på en kvantecomputer er nemlig blevet vist til at kunne løse det diskrete logaritmeproblem for en abelsk gruppe på en elliptisk kurve. For at kunne undgå dette, er meget forskning lige nu i gang med at undersøge om man i stedet kan bruge ikke-abelske grupper som Shors’ algoritme ikke kan anvendes på (\cite{jeremywohlwend2022}). Forhåbentligt går der dog et par år før, at den klassiske kryptering bliver brudt.

@@ -1,0 +1,326 @@
+\section{Bilag}
+
+\subsection{Elliptisk Kurvekryptografi kode}
+\label{sec:code}
+\begin{python}
+INF_POINT = None 
+
+class EllipticCurve:
+	def __init__(self, p, A, B, G, n):
+		self.p = p # prime number
+		self.A = A # Coefficient
+		self.B = B # Coefficient
+		self.G = G # Generator point
+		self.n = n # order of subgroup
+
+	def is_on_curve(self, P):
+		"""" Check whether point is located on curve """
+		if P is INF_POINT:
+			return True
+
+		x, y = P
+		
+		return (y * y - x * x * x - self.A * x - self.B) % self.p == 0	
+
+	def add(self, P, Q):
+		""" Returns the new point of P+Q according to the group law defined in pseudocode"""
+		if P == INF_POINT:
+			return Q
+		if Q == INF_POINT:
+			return P
+		
+		x1, y1 = P
+		x2, y2 = Q
+
+		if x1 == x2 and y1 != y2:
+			return INF_POINT
+
+		if x1 == x2:
+			slope = (3 * x1 * x1 + self.A) * self.inverse_modp(2 * y1)			
+		else:
+			slope = (y1 - y2) * self.inverse_modp(x1 - x2)
+
+		x3 = slope * slope - x1 - x2
+		y3 = y1 + slope * (x3 - x1)
+		new_point = (x3 % self.p, -y3 % self.p)
+
+		return new_point
+
+	def double(self, P):
+		"""" Get double of point. Do the addition P+P"""
+		return self.add(P, P)
+
+	def negative(self, P):
+		if P is INF_POINT:
+			return INF_POINT
+		
+		x, y = P
+		neg_point = (x, -y % self.p)
+
+		return neg_point
+
+	def mult(self, n, P):
+		""" add P to itself n times"""	
+		if n % self.n == 0 or P is INF_POINT:
+			return INF_POINT
+		if n < 0:
+			return self.negative(self.mult(-n, P))
+		new_point = INF_POINT
+		temp_point = P
+		while n:
+			if n & 1: #bitwise returns 1 if the last bit is 1.
+				new_point = self.add(new_point, temp_point)
+			temp_point = self.double(temp_point)
+			n >>= 1 # Shift binary number 1 bit
+		return new_point
+
+	def brute_force(self, public_key):
+		temp_point = self.G
+		for i in range(1, self.p):
+			if temp_point == public_key:
+				return(i)
+			temp_point = self.mult(i+1, self.G)
+
+	def discriminant(self):
+		"""Returns discriminant of curve 
+		if D != 0 then elliptic curve is valid"""
+		return ((4*self.A**3) + (27*self.B**2)) % self.p != 0
+
+	def inverse_modp(self, n):
+		"""Returns the inverse of n modulo p.
+			This function returns the only integer x such that (x * n) % p == 1.
+			n must be non-zero and p must be a prime.
+			source: http://anh.cs.luc.edu/331/notes/xgcd.pdf
+		"""
+		if n == 0:
+			raise ZeroDivisionError('division by zero')
+		if n < 0:
+			return self.p - self.inverse_modp(-n)
+
+		s, old_s = 0, 1
+		t, old_t = 1, 0
+		r, old_r = self.p, n
+
+		while r != 0:
+			quotient = old_r // r
+			old_r, r = r, old_r - quotient * r
+			old_s, s = s, old_s - quotient * s
+			old_t, t = t, old_s - quotient * t
+
+		_, x, _ = old_r, old_s, old_t
+
+		return x % self.p
+\end{python}
+
+\subsection{Omregning fra sekunder til år}
+\label{section:omregning}
+En computer laver $2^{30}$ operationer pr. sek. Vi løser ligningen hvor $x$ er antal sekunder.
+$$2^{30} \cdot x = 2^{100}$$
+$$x=\frac{2^{100}}{2^{30}}=2^{100}-2^{30}=2^{70}$$
+Vi ved at det tager $2^{70}$ sekunder. Der er $3,154\cdot 10^7$ sekunder på et år. Hermed kan vi opskrive følgende.
+$$\frac{2^{70}\cdot s}{3,154 \cdot 10^7 \cdot \frac{s}{aar}} = 3,74\cdot 10^{13}\cdot aar$$
+
+\subsection{Grafer}
+Alle grafer er fremstillet med python biblioteket matplotlib. Nedenunder kan koden for fremstillingen ses.
+
+\subsubsection{Figur 1.}
+\label{section:figur_1}
+\begin{python}
+def ecc_r(x):
+    return x**3 - 2*x + 8
+
+fig, ax = plt.subplots(dpi=100)
+y, x = np.ogrid[-5:5:100j, -5:5:100j]
+plt.contour(x.ravel(), y.ravel(), y**2 - ecc_r(x), [0])
+plt.grid()
+plt.axhline(y=0, color='k')
+\end{python}
+
+\subsubsection{Figur 2.}
+\label{section:figur_2}
+\begin{python}
+# Points P and Q on E
+P = np.array((-2, np.sqrt(ecc_r(-2))))
+Q = np.array((0, np.sqrt(ecc_r(0))))
+
+ax.scatter(*P)
+ax.annotate('P', (P[0], P[1]+0.25), c='b')
+
+ax.scatter(*Q)
+ax.annotate('Q', (Q[0], Q[1]+0.25), c='b')
+
+# Intersecting line
+t = np.arange(-1, 3, 0.001)
+line = np.array([(Q-P) * t_i + P for t_i in t])
+ax.plot(line[:,0], line[:,1], linestyle='--', c='black', linewidth=1)
+
+# Find points where the line intersects E
+for l in line:
+    if ecc_r(l[0]) > 0:
+        if np.isclose(l[1], np.sqrt(ecc_r(l[0])), rtol=0.0001):
+            R = l
+
+# Plot the last point that intersected
+ax.scatter(*R)
+ax.annotate('R', (R[0]+0.1, R[1]-0.45), c='b')
+
+# Draw vertical line, and the new point which is our sum P+Q
+ax.axvline(R[0], linestyle='--', c='black', linewidth=1)
+ax.scatter(R[0], -R[1])
+ax.annotate('(-R) P+Q', (R[0]+0.1, -R[1]+0.25), c='b')
+
+# Draw the point at infinity to have 3 points of intersection for vertical line
+ax.scatter(R[0], ax.get_ylim()[1])
+ax.annotate(r'$\mathcal{O}$', (R[0]+0.1, ax.get_ylim()[1] - 0.35), c='b')
+fig
+\end{python}
+
+\subsubsection{Figur 3.}
+\label{section:figur_3}
+\begin{python}
+fig = plt.figure(dpi=100)
+
+# The point P
+P = np.array((-1, np.sqrt(ecc_r(-1))))
+
+plt.scatter(*P)
+plt.annotate('P', (P[0]-0.1, P[1]+0.25), c='b')
+plt.scatter(P[0]+0.1, P[1])
+plt.annotate('Q', (P[0]+0.1, P[1]-0.5), c='b')
+
+
+# Plot ECC
+y, x = np.ogrid[-5:5:1000j, -5:5:1000j]
+plt.contour(x.ravel(), y.ravel(), y**2 - ecc_r(x), [0])
+
+# Dervative to find tangent point
+def d_dx_e(x):
+    n = 3 * x ** 2 - 5
+    d = 2 * np.sqrt(x**3 - 5 * x + 8)
+    return n / d
+
+# Plot the tangent to P
+t = np.arange(-4, 4, 0.01)
+def y_intercept(x_i, m):
+    return m * (x_i - P[0]) + P[1]
+
+line = y_intercept(t, d_dx_e(P[0]))
+plt.plot(t, line, linestyle='--', c='black', linewidth=1)
+
+# Get the intersection points of E with tangent line
+temp = [ecc_r(t_i) if ecc_r(t_i) > 0 else 0 for t_i in t]
+idx = np.argwhere(np.diff(np.sign(np.sqrt(temp) - line))).flatten()[-1:][0]
+
+R = t[idx], line[idx]
+plt.scatter(*R)
+plt.annotate('R', (R[0]+0.1, R[1]-0.45), c='b')
+
+# Draw vertical line
+plt.axvline(t[idx], linestyle='--', c='black', linewidth=1)
+
+plt.scatter(R[0], -R[1])
+plt.annotate('P+P', (R[0]+0.1, -R[1] + 0.25), c='b')
+
+
+# Draw the point at infinity to have 3 points of intersection for vertical line
+plt.scatter(R[0], ax.get_ylim()[1])
+plt.annotate(r'$\mathcal{O}$', (R[0]+0.1, ax.get_ylim()[1] - 0.35), c='b')
+\end{python}
+
+\subsubsection{Figur 4.}
+\label{section:figur_4}
+\begin{python}
+# Order
+p = 487
+x = np.array(range(0, p))
+
+A = -5
+B = 8
+
+x2 = x**2 % p
+y2 = ecc(x, p, A, B)
+
+# Compute the sqrt of the elliptic curve for plotting
+y = sqrt_f(x, y2, p)
+
+fig = plt.figure(dpi=100)
+for y_p in y:
+    [plt.scatter(y_p[0], i, c='b') for i in y_p[1:]]
+#plt.title('p=487   y^2=x^3-5x+8 (mod p)')
+\end{python}
+
+\subsubsection{Figur 6.}
+\label{section:figur_6}
+\begin{python}
+# M-221 https://eprint.iacr.org/2013/647.pdf
+p = 0x1FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFD
+A = 0x01c93a
+B = 0x01
+G = (0x04, 0x0f7acdd2a4939571d1cef14eca37c228e61dbff10707dc6c08c5056d)
+n = 0x040000000000000000000000000015A08ED730E8A2F77F005042605B
+
+e = EllipticCurve(p, A, B, G, n)
+
+gen_times = []
+break_times = []
+
+iterations = 15
+for i in range(1, iterations):
+    private_key = 2**i
+    startgen = timer()
+    public_key = e.mult(private_key, G)
+    endgen = timer()
+    gen_times.append(endgen - startgen)
+
+    startbreak = timer()
+    breaked_public_key = e.brute_force(public_key)
+    endbreak = timer()
+    break_times.append(endbreak - startbreak)
+    print(private_key)
+
+print("gen: ", gen_times)
+print("")
+print("break: ", break_times)
+
+x = range(1,iterations)
+slope, intercept, r_value, p_value, std_err = stats.linregress(x, gen_times)
+
+coef = np.polyfit(x,gen_times,1)
+poly1d_fn = np.poly1d(coef) 
+fig, ax1 = plt.subplots()
+
+
+ax1.set_xlabel('Binaert tal laengde')
+ax1.set_ylabel('tid (s)')
+ax1.plot(x, gen_times, 'yo', x, poly1d_fn(x), '--k')
+plt.title('Bits i private_key vs tid for public-key generering ' + f'{poly1d_fn}' + f'   R^2={"{:.2f}".format(r_value)}')
+fig = plt.figure(dpi=300)
+plt.show()
+
+slope, intercept, r_value, p_value, std_err = stats.linregress(x, np.log(break_times))
+
+coef = np.polyfit(x, np.log(break_times),1)
+poly1d_fn = np.poly1d(coef) 
+
+fig, ax1 = plt.subplots()
+ax1.set_xlabel('Binaert tal laengde')
+ax1.set_ylabel('tid (s) paa logaritmisk skala')
+color = 'tab:red'
+ax1.tick_params(axis='y', labelcolor=color)
+
+ax1.plot(x, np.log(break_times), 'ro', x, poly1d_fn(x), '--k')
+
+ax2 = ax1.twinx()
+color = 'tab:blue'
+ax2.set_ylabel('tid (s)')
+ax2.plot(x, break_times, 'bo')
+ax2.tick_params(axis='y', labelcolor=color)
+
+plt.title('Bits i private_key vs tid for private-key breaking' + f'{poly1d_fn}' + f'   R^2={"{:.2f}".format(r_value)}')
+fig = plt.figure(dpi=300)
+
+plt.savefig('break.png')
+plt.show()
+\end{python}
+
+

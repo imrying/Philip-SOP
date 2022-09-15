@@ -1,0 +1,127 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{a4wide}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{graphicx}
+\usepackage[danish]{babel}
+\usepackage{float}
+\usepackage{appendix}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{lipsum}  
+\usepackage{fancyref}
+%\usepackage{varioref}
+
+\usepackage{svg}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{mdframed}
+\usepackage{placeins}
+\usepackage{algpseudocode}
+\usepackage{booktabs}
+\usepackage{pdfpages}
+
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=black
+}
+
+% bokse
+\usepackage[framemethod=default]{mdframed}
+
+% coding
+\usepackage{pythonhighlight}
+
+\newcommand{\code}{\texttt}
+
+% sources
+\usepackage[
+backend=biber,
+style=apa,
+]{biblatex}
+\addbibresource{sources.bib}
+
+% Documentation for fancyref:
+% https://mirrors.dotsrc.org/ctan/macros/latex/contrib/fancyref/fancyref.pdf
+
+% Redefine commands for danish - add more when needed, see above pdf p. 8 - 10
+\renewcommand*{\Frefeqname}{ligning}
+\renewcommand*{\Frefsecname}{sektion}
+\renewcommand*{\tablename}{tabel}
+
+\renewcommand{\fancyrefdefaultformat}{plain}
+
+%\renewcommand*{\pagename}{side}
+%\renewcommand*{\Frefonname}{på}
+%\renewcommand*{\Frefseename}{se}
+
+% path for image
+\graphicspath{ {./images/} }
+
+
+\usepackage{eso-pic}
+\newcommand\BackgroundPic{%
+\put(0,0){%
+\parbox[b][\paperheight]{\paperwidth}{%
+\vfill
+\centering
+\includegraphics[angle=90, width=\paperwidth,height=\paperheight,%
+keepaspectratio]{final.png}%
+\vfill
+}}}
+
+\title{
+    \vspace{7cm}
+    \\
+    Eliptisk kurvekryptografi
+    \\
+}
+\author{Philip Rying}
+\date{18-03-2022}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\leftmark}
+\lhead{Philip Rying}
+\rfoot{\thepage{} af \pageref{LastPage}}
+
+\begin{document}
+\includepdf[pages={1}]{Philip Rying 3a1 SOP Opgaveformulering.pdf}
+\AddToShipoutPicture*{\BackgroundPic}
+\maketitle
+\newpage
+\input{kapitler/abstract}
+\newpage
+
+\tableofcontents
+
+\newpage
+\input{kapitler/indledning}
+\newpage
+
+\input{kapitler/elliptiske_kurver}
+\input{kapitler/grupper}
+\input{kapitler/endelige_legemer}
+\input{kapitler/kryptologi}
+\input{kapitler/diskrete_logaritmeproblem}
+\input{kapitler/implementering}
+\input{kapitler/vurdering_og_diskussion}
+\input{kapitler/konklusion}
+
+%\input{kapitler/ligninger}
+
+\newpage
+\addcontentsline{toc}{section}{Litteratur}
+\printbibliography
+
+\appendix
+\input{kapitler/bilag}
+
+\end{document}

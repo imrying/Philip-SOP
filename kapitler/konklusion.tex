@@ -1,0 +1,11 @@
+\section{Konklusion}
+Overordnet kan det ses, at ellipitiske kurver kan anvendes til public-key kryptering. Først blev der redegjort for elliptiske kurver, og hvorfor der kun kan benyttes kurver hvor diskriminanten ikke er 0. Udfra den elliptiske kurve $E$ blev der defineret en abelsk gruppe. Det blev set, at elementerne for gruppen var punkter på den elliptiske kurve. Nulelementet var et punkt uendeligt langt væk. Det inverse element for et punkt $P$ er det som er symmetrisk om x-aksen. Additionen er givet ved at $P\oplus Q\oplus R=\mathcal{O}$. Additionen blev herefter uddybet geometrisk og udledt algebraisk. Herefter blev algoritmen \code{double-and-add} introduceret hvor tiden for at lave operationen $nP$ blev reduceret til $O(log_{2}n)$ i stedet for $O(n)$.
+Efter dette blev elliptiske kurver over endelige legemer introduceret. Dette blev gjort da en computer har meget svært ved at regne på uendeligheder. Vi definerede derfor det endelige legeme hvor alle elementer er heltal modulo et primtal ($\mathbb{F}_{P}$). Begrebet public-key kryptografi blev introduceret og en metode til at lave et Elliptic Curve Diffie-Helmann key exchange blev opstillet.
+
+Herefter blev der redegjort for det diskrete logaritmeproblem, hvor en \code{brute-force} algoritme blev opstillet til at løse det. Denne algoritme blev så sammenlignet med tiden for generering af en offentlig nøgle. Det kunne ses, at der var en lineær sammenhæng af den private nøglens binære længde, og tiden for genering af den offentlige nøgle, mens tiden for breaking af privatnøglen var eksponentiel. 
+
+Efter dette blev et elliptisk kurvekryptosystem designet. Algoritmerne til addition på en elliptisk kurve, samt skalarmultiplikation blev opstillet som pseudokode. Herefter blev der vist et eksempel med et Diffie-Helmann key exchange. Selve krypteringen blev vurderet som sikker baseret på det diskrete logaritmeproblem. Metoden for selve udvekslingen blev dog kun vurderet sikker så lang tid at man stolte på den anden part. 
+Elliptisk kurvekryptografi blev så sammenlignet med RSA-kryptering hvor det kunne ses at RSA krævede en meget længere private-key end ECC for den samme mængde sikkerhed. ECC blev herefter diskuteret i forbindelse med Edward Snowdens læk i 2013, og hvorfor det ikke er godt at have mange offentlige parametre.
+
+
+

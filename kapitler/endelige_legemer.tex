@@ -1,0 +1,44 @@
+\section{Elliptiske kurver over endelige legemer}
+At bruge alle de reele tal er ikke smart, når vi gerne vil have en computer til at lave diverse operationer. I nogen tilfælde, kan vi få punkter med rigtigt mange decimaltal, som skal beskrives helt nøjagtigt for at vores addition virker. Udover det er det meget svært at regne på uendeligheder, og vi har derfor brug for en \textit{finit} mængde. For at få en finit mængde opstiller vi i stedet vores gruppe som et endeligt legeme, som indeholder en finit mængde elementer. Først introducerer vi dog begrebet moduloregning.
+
+\subsection{Modulær aritmetik}
+Modulær aritmetik eller moduloregning er i sin mest elementære form aritmetik, som nulstiller sig selv hver gang et bestemt heltal \textit{N} er nået. Et kendt eksempel på moduloregning er et 12-times ur, hvor dagen er inddelt i to 12-timers perioder. Hvis klokken er 7:00 så vil den $8$ timer senere være 3:00. Hvis vi ligger tallene sammen får vi $7+8=15$, men da klokken "nulstiller sig selv" hver 12 time giver det hermed $3$. Et 12-timers ur er altså \textit{modulo 12}. Vi opskriver det som:
+$$7+8 \equiv 3 \pmod{12}$$
+Man kan sige at 3 er resten ved at dividere 15 med 12.
+
+\subsection{Endelige legemer for elliptiske kurver}
+Det endelige legeme vi vil anvende, er alle heltal modulo $p$, hvor $p$ er et primtal. Vi kalder denne mængde af tal for $\mathbb{F}_p$. Indtil videre har vi brugt \fref{eq:ecc} men den ændres nu til.
+
+\begin{mdframed}[frametitle={Endeligt legeme for elliptisk kurve}]
+\begin{equation}\label{eq:ecc_finite}
+    \{(x,y) \in \mathbb{F}_{P}^2\ | \quad y^2 \equiv x^3+Ax+B \pmod{p}, 4A^3 + 27B^2 \not\equiv 0 \pmod{p} \} \cup \{\mathcal{O}\}
+\end{equation}
+\end{mdframed}
+
+Hvor $\mathcal{O}$ stadigvæk er punktet ved uendelig, samt at $A$ og $B$ er heltal i $\mathbb{F}_{p}$. Dette former en ny gruppe over $\mathbb{F}_p$ hvor additionslovene er de samme som tidligere. I stedet for graferne for elliptiske kurver som vist tidligere, fås følgende når vi plotter.
+
+\begin{figure}[htbp]
+\centering
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includesvg[width=1.1\linewidth]{finite_mod_37.svg}
+  \caption{$p=37$}
+  \label{fig:sub1}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includesvg[width=1.1\linewidth]{finite_mod_487.svg}
+  \caption{$p=487$}
+  \label{fig:sub2}
+\end{subfigure}
+\caption{Afbildning af den elliptiske kurve $y^2 \equiv x^3-5x+8 \pmod{p}$. Se \ref{section:figur_4} for kode}
+\label{fig:finit_felt}
+\end{figure}
+
+Ovenover ses \fref{fig:finit_felt} for en elliptisk kurve som er kongurent med $p$. Bemærk at der maksimalt for hvert $x$ kun er to punkter. Udover det er ingen punkter på graferne større end $p$ grundet at vi tager modulo $p$ på dem. Som det kan ses ser vores figur meget anderledes ud hvis man sammenligner dem med tidligere. Vi kan dog stadigt lave samme geometriske additioner. Da det er et endeligt legeme vi regner over, kan vi ikke dividere normalt, da division svarer til at tage den modulære multiplikative inverse. Det svarer til at løse ligningen:
+\begin{equation}\label{eq:division}
+ax \equiv 1 \pmod{p}
+\end{equation}
+
+Hvor $x$ er den modulære multiplikative invers. Sagt med andre ord er resten af at dividere $a\cdot x$ med et heltal $p$ lig med $1$. Med euklids udvidede algoritme, kan vi dog hurtigt udregne overstående ligning (\cite{donaldknuth1968}).
+

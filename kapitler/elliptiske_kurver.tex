@@ -1,0 +1,64 @@
+\section{Elliptiske Kurver}\label{sec:elliptiske_kurver}
+I følgende afsnit redegøres der for elliptiske kurver på Weierstrass' normalform. Først vises ligningen for en elliptisk kurve hvorefter forskellige egenskaber introduceres. 
+
+\begin{mdframed}[frametitle={Weierstrass' normalform for elliptisk kurve}]
+En elliptisk kurve $E$ består af punkterne for $(x,y)$, der opfylder ligningen.
+
+\begin{equation}\label{eq:E}
+    E:  y^2=x^3+Ax+B
+\end{equation}
+(\cite{youssefelhousni2018})
+\end{mdframed}
+
+Vi kan afbilde kurven fra \fref{eq:E} i et koordinatsystem som set nedenunder. Figuren giver dog ikke et helt "klart" billede af en elliptisk kurve, da vi kun viser den del som ligger i $\mathbb{R}^2$. Da mange matematikprogrammer har svært ved at afbilde disse kurver, er alle plots fremstillet ved brug af \code{matplotlib}. Se \ref{section:figur_1} for koden.
+\begin{figure}[htbp]
+\centering
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includesvg[width=1.0\linewidth]{normal_elliptisk_kurve.svg}
+  \caption{$y^2=x^3-3x+8$}
+  \label{fig:sub1}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includesvg[width=1.0\linewidth]{ikke_veldefineret_elliptisk_kurve.svg}
+  \caption{$y^2=x^3-3x+2$}
+  \label{fig:sub2}
+\end{subfigure}
+\caption{Afbildning af elliptiske kurver i $\mathbb{R}^2$ se \ref{section:figur_1} for kode.}
+\label{fig:elliptiske_kurver_i_R}
+\end{figure}
+\FloatBarrier
+
+\Fref{fig:elliptiske_kurver_i_R} viser afbildningen af \fref{eq:E} i $\mathbb{R}^2$ for to forskellige elliptiske kurver. Kurven til venstre har parametrene $A= -3, B= 8$ og er \textit{ikke-singulær} hvorimod kurven til højre med $A= -3, B =2$ er \textit{singulær}. Geometrisk betyder det, at grafen ikke har selv-kryds, isolerede punkter eller spidser. Kurven til højre har et punkt som ikke er veldefineret $(1,0)$ hvilket hermed gør, at den er singulær.
+
+\subsection{Diskriminanten for en elliptisk kurve}
+Nogle af de beregninger vi skal lave på gruppeoperatoren på den elliptiske kurve senere afhænger af, at kurven har en veldefineret tangent i alle punkter. I forhold til elliptiske kurver vil det sige, at den skal have tre forskellige rødder, hvor de gerne må være komplekse, så langt tid de alle er forskellige. Hermed skal vores kurve være \textit{ikke-singulær}. For at vide om en kurve er ikke-singulær kan vi bruge dens diskriminant givet ved (\cite{josephh.silverman2006}):
+\begin{mdframed}[frametitle={Kurvens diskriminant}]
+For en elliptisk kurve givet ved $y^2=x^3+Ax+B$ er dens diskriminant givet ved:
+\begin{equation}\label{eq:diskriminant}
+    \Delta = 4A^3+27B^2
+\end{equation}
+Hvis $\Delta = 0$, er kurven singulær.
+\end{mdframed}
+
+Fra nu af anvendes kun elliptiske kurver givet ved \fref{eq:E} hvor parametrene for $A$ og $B$ er valgt så $\Delta \neq 0$ i \fref{eq:diskriminant}.
+\subsection{Skæringspunkter mellem ret linje og E}
+Vi ser, at en sekantline mellem P og Q, som er punkter på E maksimalt kan have tre skæringspunkter med $E$.
+
+$$y=ax+b \Rightarrow y^2=(ax+b)^2 = a^2 \cdot x^2+2abx+b^2$$
+
+Sættes dette lig med ligningen for en elliptisk kurve \fref{eq:E} fås.
+
+$$a^2 \cdot x^2 + 2abx + b^2 = x^3 +Ax+B$$
+\begin{equation}
+    0= x^3 + Ax+ B - a^2 \cdot x^2 - 2abx - b^2
+\end{equation}
+Da dette udtryk er af ordenen $3$, kan der maksimalt være tre løsninger til ligningen. Et eksempel på hvor der ikke er tre løsninger er når sekantlinjen er vertikal, grundet at kurven er symmetrisk omkring x-aksen. 
+
+\subsection{Punkt ved uendelig}
+Vi skal senere bruge et punkt ved uendelig, som vi kalder $\mathcal{O}$ på vores elliptiske kurve til at definere vores gruppe. Derfor medtages dette i udtrykket for en \textit{"valid elliptisk kurve"}. Udover det, vil vi kun  kun anvende elliptiske kurver hvor $\Delta \neq 0$ når vi opstiller gruppen. Samlet kan vi opskrive at vores elliptiske kurve skal følge at:
+\begin{equation}\label{eq:ecc}
+    \{(x,y) \in \mathbb{R}^2\ | \quad y^2=x^3+Ax+B, 4A^3 + 27B^2 \neq 0 \} \cup \{\mathcal{O}\}
+\end{equation}
+
